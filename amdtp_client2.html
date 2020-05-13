@@ -111,8 +111,8 @@ function parseTxNortify(data) {
  
 function onTxNortify(event) {
   const characteristic = event.target;
-//  print_log(parseTxNortify(characteristic.value));
-  print_log("received!!");
+  print_log(parseTxNortify(characteristic.value));
+//  print_log("received!!");
 }
 
 //LEDに表示するメッセージを送信
