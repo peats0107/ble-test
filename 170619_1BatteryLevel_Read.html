@@ -1,0 +1,106 @@
+<!doctype html>
+<!--
+Copyright 2017 Analog Devices, Inc & JellyWare Inc.
+-->
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Web Bluetooth API Sample">
+    <meta name="viewport" content="width=640, maximum-scale=1.0, user-scalable=yes">
+    <title>BlueJelly</title>
+    <link href="https://fonts.googleapis.com/css?family=Lato:100,300,400,700,900" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="style.css">
+    <script type="text/javascript" src="bluejelly.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="title margin">
+            <p id="title">Web Bluetooth API Sample</p>
+            <p id="subtitle">#01 BatteryLevelの読み込み</p>
+        </div>
+        <div class="contents margin">
+            <button id="readData" class="button">Read</button>
+            <button id="reset" class="button">Reset</button>
+
+            <hr>
+
+            <div id="device_name">xxxx</div>
+            <div id="data_text">xxxx</div>
+
+
+        </div>
+        <div class="footer margin">
+          &copy; 2017 <a href="http://www.analog.com/jp/" target="_blank">Analog Devices, Inc</a> & <a href="http://jellyware.jp/" target="_blank">JellyWare Inc.</a> All Rights Reserved
+        </div>
+    </div>
+    <script>
+        //--------------------------------------------------
+        //Global変数
+        //--------------------------------------------------
+        //BlueJellyのインスタンス生成
+        var ble = new BlueJelly();
+
+
+        //-------------------------------------------------
+        //ボタンが押された時のイベント登録
+        //--------------------------------------------------
+        document.getElementById('readData').addEventListener('click', function() {
+            ble.read('BatteryLevel');
+        });
+
+        document.getElementById('reset').addEventListener('click', function() {
+            ble.reset(); //reset is disconnect & clear
+        });
+
+
+        //--------------------------------------------------
+        //ロード時の処理
+        //--------------------------------------------------
+        window.onload = function() {
+            //初期の文字列表示
+            document.getElementById('device_name').innerHTML = "No Device";
+            document.getElementById('data_text').innerHTML = "No Data"
+
+            //UUIDの設定
+            ble.setUUID("BatteryLevel", "0000180f-0000-1000-8000-00805f9b34fb", "00002a19-0000-1000-8000-00805f9b34fb");
+        }
+
+
+        //--------------------------------------------------
+        //Scan後の処理
+        //--------------------------------------------------
+        ble.onScan = function(deviceName) {
+            //HTMLに表示
+            document.getElementById('device_name').innerHTML = deviceName;
+        }
+
+
+        //--------------------------------------------------
+        //Read後の処理：得られたデータの表示など行う
+        //--------------------------------------------------
+        ble.onRead = function(data, uuid) {
+            //フォーマットに従って値を取得
+            value = data.getUint8(0); //1Byteの場合のフォーマット
+
+            //HTMLに値を表示
+            document.getElementById('data_text').innerHTML = value;
+
+            //再びRead
+            ble.read('BatteryLevel');
+        }
+
+
+        //--------------------------------------------------
+        //Reset後の処理
+        //--------------------------------------------------
+        ble.onReset = function() {
+            //HTMLに表示
+            document.getElementById('device_name').innerHTML = "No Device";
+        }
+    </script>
+</body>
+
+</html>
