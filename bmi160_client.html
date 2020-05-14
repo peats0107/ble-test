@@ -56,8 +56,8 @@ function connect() {
   //options.acceptAllDevices = true;
   
   options.filters = [
-    //{services: ['device_information']}, // <- 重要
-    { namePrefix: "AM Barebone" }
+    {services: ['device_information']}, // <- 重要
+    { namePrefix: "AM" }
   ];
   
   navigator.bluetooth.requestDevice(options)
