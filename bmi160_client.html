@@ -132,13 +132,13 @@ function onTxNortify(event) {
   const characteristic = event.target;
   const data = characteristic.value;
 //  print_log(parseTxNortify(characteristic.value));
-  line_gryo_x.append(new Date().getTime(), data.getInt16(0));
-  line_gryo_y.append(new Date().getTime(), data.getInt16(2));
-  line_gryo_z.append(new Date().getTime(), data.getInt16(4));
+  line_gryo_x.append(new Date().getTime(), data.getInt16(0, true));
+  line_gryo_y.append(new Date().getTime(), data.getInt16(2, true));
+  line_gryo_z.append(new Date().getTime(), data.getInt16(4, true));
 
-  line_acc_x.append(new Date().getTime(), data.getInt16( 6));
-  line_acc_y.append(new Date().getTime(), data.getInt16( 8));
-  line_acc_z.append(new Date().getTime(), data.getInt16(10));
+  line_acc_x.append(new Date().getTime(), data.getInt16( 6, true));
+  line_acc_y.append(new Date().getTime(), data.getInt16( 8, true));
+  line_acc_z.append(new Date().getTime(), data.getInt16(10, true));
 
   //print_log("received!!");
 }
