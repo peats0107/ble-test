@@ -6,9 +6,10 @@
 <meta name="viewport" content="width=640, maximum-scale=1.0, user-scalable=yes">
 <title></title>
     <link rel="stylesheet" href="https://jellyware.jp/kurage/bluejelly/code/style.css">
+    <script type="text/javascript" src="./smoothie.js"></script>
 </head>
  
-<body>
+<body onload="createTimeline()>
 <div class="container">
     <div class="title margin">
         <p id="title">BMI160 client sample</p>
@@ -19,6 +20,9 @@
         <button id="connect" class="button">connect</button>
         <button id="disconnect" class="button">disconnect</button>
         <button id="clear" class="button">clear log</button>
+       <hr>
+        <canvas id="chart_gyro" width="500" height="320"></canvas>
+        <canvas id="chart_acc"  width="500" height="320"></canvas>
     </div>
     <div class="contents margin">
          <p id="subtitle">LOG</p>
@@ -48,10 +52,19 @@ function clear_log() {
   document.getElementById('console_log').innerHTML= "";
 }
 
+function createTimeline() {
+    var chart_gyro = new SmoothieChart();
+    chart_gyro.addTimeSeries(random, { strokeStyle: 'rgba(0, 255, 0, 1)', fillStyle: 'rgba(0, 255, 0, 0.2)', lineWidth: 4 });
+    chart_gyro.streamTo(document.getElementById("chart_gyro"), 500);
+
+    var chart_acc = new SmoothieChart();
+    chart_acc.addTimeSeries(random, { strokeStyle: 'rgba(0, 255, 0, 1)', fillStyle: 'rgba(0, 255, 0, 0.2)', lineWidth: 4 });
+    chart_acc.streamTo(document.getElementById("chart_acc"), 500);
+}
+
 //chibi:bitに接続する
 function connect() {
   let options = {};
- 
   
   //options.acceptAllDevices = true;
   
