@@ -34,8 +34,12 @@
 var bluetoothDevice;
 var characteristic_ntf;
 
-var chart_gryo = new TimeSeries();
-var chart_acc  = new TimeSeries();
+var line_gryo_x = new TimeSeries();
+var line_gryo_y = new TimeSeries();
+var line_gryo_z = new TimeSeries();
+var line_acc_x  = new TimeSeries();
+var line_acc_y  = new TimeSeries();
+var line_acc_z  = new TimeSeries();
 
 var BMI160_SERVICE_UUID                      = '00002760-08c2-11e1-9073-0e8ac72e2000';
 var BMI160_NTF_CHARACTERISTIC_UUID           = '00002760-08c2-11e1-9073-0e8ac72e2012';
@@ -56,12 +60,20 @@ function clear_log() {
 }
 
 function createTimeline() {
-    var chart1 = new SmoothieChart();
-    chart1.addTimeSeries(chart_gryo, { strokeStyle: 'rgba(0, 255, 0, 1)', fillStyle: 'rgba(0, 255, 0, 0.2)', lineWidth: 4 });
+    var chart1 = new SmoothieChart( {
+        maxValue: 10000,   minValue: -10000
+    });
+    chart1.addTimeSeries(line_gryo_x, { strokeStyle: 'rgba(0, 255, 0, 1)', fillStyle: 'rgba(0, 255, 0, 0.2)', lineWidth: 4 });
+    chart1.addTimeSeries(line_gryo_y, { strokeStyle: 'rgba(255, 0, 0, 1)', fillStyle: 'rgba(255, 0, 0, 0.2)', lineWidth: 4 });
+    chart1.addTimeSeries(line_gryo_z, { strokeStyle: 'rgba(0, 0, 255, 1)', fillStyle: 'rgba(0, 0, 255, 0.2)', lineWidth: 4 });
     chart1.streamTo(document.getElementById("chart_gyro"), 500);
 
-    var chart2 = new SmoothieChart();
-    chart2.addTimeSeries(chart_acc, { strokeStyle: 'rgba(0, 255, 0, 1)', fillStyle: 'rgba(0, 255, 0, 0.2)', lineWidth: 4 });
+    var chart2 = new SmoothieChart( {
+        maxValue: 10000,   minValue: -10000
+    });
+    chart2.addTimeSeries(line_acc_x, { strokeStyle: 'rgba(0, 255, 0, 1)', fillStyle: 'rgba(0, 255, 0, 0.2)', lineWidth: 4 });
+    chart2.addTimeSeries(line_acc_y, { strokeStyle: 'rgba(255, 0, 0, 1)', fillStyle: 'rgba(255, 0, 0, 0.2)', lineWidth: 4 });
+    chart2.addTimeSeries(line_acc_z, { strokeStyle: 'rgba(0, 0, 255, 1)', fillStyle: 'rgba(0, 0, 255, 0.2)', lineWidth: 4 });
     chart2.streamTo(document.getElementById("chart_acc"), 500);
 }
 
@@ -119,7 +131,15 @@ function parseTxNortify(data) {
 function onTxNortify(event) {
   const characteristic = event.target;
 //  print_log(parseTxNortify(characteristic.value));
-  print_log("received!!");
+  line_gryo_x.append(new Date().getTime(), characteristic.getInt16(0, true));
+  line_gryo_y.append(new Date().getTime(), characteristic.getInt16(2, true));
+  line_gryo_z.append(new Date().getTime(), characteristic.getInt16(4, true));
+
+  line_acc_x.append(new Date().getTime(), characteristic.getInt16( 6, true));
+  line_acc_y.append(new Date().getTime(), characteristic.getInt16( 8, true));
+  line_acc_z.append(new Date().getTime(), characteristic.getInt16(10, true));
+
+  //print_log("received!!");
 }
 
 //LEDに表示するメッセージを送信
