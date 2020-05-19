@@ -34,7 +34,6 @@
 
 <script>
 var bluetoothDevice;
-var characteristic_ntf;
 
 var line_gryo_x = new TimeSeries();
 var line_gryo_y = new TimeSeries();
@@ -50,7 +49,6 @@ var BMI160_NTF_CHARACTERISTIC_UUID           = '00002760-08c2-11e1-9073-0e8ac72e
 //ボタンイベントリスナー
 document.getElementById("connect").addEventListener("click", connect);
 document.getElementById("disconnect").addEventListener("click", disconnect);    
-//document.getElementById("send").addEventListener("click", sendMessage);    
 document.getElementById("clear").addEventListener("click", clear_log);    
  
 function print_log(log) {
@@ -109,33 +107,19 @@ function connect() {
   .then(chara => {
     //console.log("characteristic", chara)
     alert("BLE connected.");
-    characteristic_ntf = chara;
     return chara.startNotifications()
   })  
   .then(chara => {
-    chara.addEventListener('characteristicvaluechanged',
-                                       onTxNortify);
+    chara.addEventListener('characteristicvaluechanged', onTxNortify);
   })  
   .catch(error => {
     console.log(error);
   });    
 }
 
-function parseTxNortify(data) {
-  const length = data.getUint16(0, true);
-  let buf = new Uint8Array(length);
-  let i = 0;
-
-  for ( i = 0; i < length - 4; i ++) {
-    buf[i]= data.getUint8(i + 4);
-  }
-  return new TextDecoder().decode(buf);
-}
- 
 function onTxNortify(event) {
-  const characteristic = event.target;
-  const data = characteristic.value;
-//  print_log(parseTxNortify(characteristic.value));
+  const data = event.target.value;
+
   line_gryo_x.append(new Date().getTime(), data.getInt16(0, true));
   line_gryo_y.append(new Date().getTime(), data.getInt16(2, true));
   line_gryo_z.append(new Date().getTime(), data.getInt16(4, true));
@@ -146,15 +130,6 @@ function onTxNortify(event) {
 
   //print_log("received!!");
 }
-
-//LEDに表示するメッセージを送信
-function sendMessage() {
-  if (!bluetoothDevice || !bluetoothDevice.gatt.connected || !characteristic_rx) return ;
-  var text = document.querySelector("#message").value;
-  var arrayBuffe = new TextEncoder().encode(text);
-  characteristic_rx.writeValue(arrayBuffe); 
-}
- 
  
 //BLE切断処理
 function disconnect() {
