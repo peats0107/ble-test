@@ -72,7 +72,7 @@ function connect() {
   })
   .then(service => {
     //console.log("service", service)
-    return bluetoothservice.getCharacteristic(BMI160_NTF_CHARACTERISTIC_UUID)
+    return bluetoothservice.getCharacteristic(BMI160_NTF_CHARACTERISTIC_UUID2)
   })
   .then(chara => {
     //console.log("characteristic", chara)
