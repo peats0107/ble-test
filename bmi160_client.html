@@ -34,6 +34,9 @@
 var bluetoothDevice;
 var characteristic_ntf;
 
+var chart_gryo = new TimeSeries();
+var chart_acc  = new TimeSeries();
+
 var BMI160_SERVICE_UUID                      = '00002760-08c2-11e1-9073-0e8ac72e2000';
 var BMI160_NTF_CHARACTERISTIC_UUID           = '00002760-08c2-11e1-9073-0e8ac72e2012';
 
@@ -53,13 +56,13 @@ function clear_log() {
 }
 
 function createTimeline() {
-    var chart_gyro = new SmoothieChart();
-    chart_gyro.addTimeSeries(random, { strokeStyle: 'rgba(0, 255, 0, 1)', fillStyle: 'rgba(0, 255, 0, 0.2)', lineWidth: 4 });
-    chart_gyro.streamTo(document.getElementById("chart_gyro"), 500);
+    var chart1 = new SmoothieChart();
+    chart1.addTimeSeries(chart_gryo, { strokeStyle: 'rgba(0, 255, 0, 1)', fillStyle: 'rgba(0, 255, 0, 0.2)', lineWidth: 4 });
+    chart1.streamTo(document.getElementById("chart_gyro"), 500);
 
-    var chart_acc = new SmoothieChart();
-    chart_acc.addTimeSeries(random, { strokeStyle: 'rgba(0, 255, 0, 1)', fillStyle: 'rgba(0, 255, 0, 0.2)', lineWidth: 4 });
-    chart_acc.streamTo(document.getElementById("chart_acc"), 500);
+    var chart2 = new SmoothieChart();
+    chart2.addTimeSeries(chart_acc, { strokeStyle: 'rgba(0, 255, 0, 1)', fillStyle: 'rgba(0, 255, 0, 0.2)', lineWidth: 4 });
+    chart2.streamTo(document.getElementById("chart_acc"), 500);
 }
 
 //chibi:bitに接続する
